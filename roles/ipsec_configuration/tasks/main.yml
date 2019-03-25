@@ -1,6 +1,7 @@
 ---
 
 - name: Ensure dendencies are present
+  tags: never
   pacman:
     name: "{{ item }}"
   loop:
@@ -11,6 +12,7 @@
 
 
 - name: Create temporary installation directory
+  tags: never
   file:
     path: "{{ item }}"
     mode: 0755
@@ -20,23 +22,39 @@
     - "{{ tmp_dir }}"
 
 - name: Fetch openswan sources
+  tags: never
   get_url:
     url: "{{ openswan_url }}"
     dest: "{{ tmp_dir }}/openswan.tar.gz"
 
 - name: Extract the archive's content
+  tags: never
   unarchive:
     src: "{{ tmp_dir }}/openswan.tar.gz"
     dest: "{{ src_dir }}"
     extra_opts: [--strip-components=1]
 
 - name: Compile openswan
+  tags: never
   make:
     chdir: "{{ src_dir }}"
     target: programs
 
 - name: Install openswan
+  tags: never
   make:
     chdir: "{{ src_dir }}"
     target: install
   become: true
+
+- name: Register ipv4 configurations
+  command: "ls /proc/sys/net/ipv4/conf"
+  register: configurations
+
+- name: Disable ipv4 incoming redirections
+  shell: "echo 0 > /proc/sys/net/ipv4/conf/{{ item }}/accept_redirects"
+  loop: "{{ configurations.stdout_lines }}"
+
+- name: Disable ipv4 outgoing redirections
+  shell: "echo 0 > /proc/sys/net/ipv4/conf/{{ item }}/send_redirects"
+  loop: "{{ configurations.stdout_lines }}"

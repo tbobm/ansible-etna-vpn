@@ -1,0 +1,31 @@
+# /etc/ipsec.conf -Openswan IPsec configuration file
+# RCSID $Id: ipsec.conf.in,v1.16 2005/07/26 12:29:45 ken Exp $
+# This file:  /usr/share/doc/openswan/ipsec.conf-sample
+#
+# Manual:     ipsec.conf.5version 2.0     
+# conforms to second version of ipsec.conf specification
+config setup
+    virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,!%v4:192.168.66.0/24
+    nat_traversal=yes
+    protostack=netkey
+    oe=off
+    plutoopts="--interface={{ interface_used }}"
+
+conn L2TP-PSK-etna
+    #Le nom de votre connexion vpn
+    authby=secret
+    pfs=no
+    auto=add
+    keyingtries=3
+    dpddelay=30
+    dpdtimeout=120
+    dpdaction=clear
+    rekey=yes
+    ikelifetime=8h
+    keylife=1h
+    type=transport
+    left="{{ personal_ip_address }}"
+    leftnexthop=%defaultroute
+    leftprotoport=17/1701
+    right="{{ vpn_ip_address }}"
+    rightprotoport=17/1701
