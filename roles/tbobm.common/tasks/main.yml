@@ -1,0 +1,26 @@
+---
+
+- name: Ensure dendencies are present
+  pacman:
+    name: "{{ item }}"
+  loop:
+    - make
+    - libgmp3-dev
+    - bison
+    - flex
+
+
+- name: Create temporary installation directory
+  tempfile:
+    state: directory
+  register: tmp_dir
+
+- name: Fetch openswan sources
+  get_url:
+    url: "{{ openswan_url }}"
+    dest: "{{ tmp_dir }}/openswan.tar.gz"
+
+- name: Extract the archive's content
+  unarchive:
+    src: "{{ tmp_dir }}/openswan.tar.gz"
+    dest: "{{ tmp_dir }}/openswan-src"

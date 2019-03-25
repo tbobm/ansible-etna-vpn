@@ -1,0 +1,2 @@
+---
+openswan_url: "{{ https://download.openswan.org/openswan/openswan-latest.tar.gz }}"
