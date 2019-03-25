@@ -5,15 +5,19 @@
     name: "{{ item }}"
   loop:
     - make
-    - libgmp3-dev
+    - gmp
     - bison
     - flex
 
 
 - name: Create temporary installation directory
-  tempfile:
+  file:
+    path: "{{ item }}"
+    mode: 0755
     state: directory
-  register: tmp_dir
+  loop:
+    - "{{ src_dir }}"
+    - "{{ tmp_dir }}"
 
 - name: Fetch openswan sources
   get_url:
@@ -23,15 +27,16 @@
 - name: Extract the archive's content
   unarchive:
     src: "{{ tmp_dir }}/openswan.tar.gz"
-    dest: "{{ tmp_dir }}/openswan-src"
+    dest: "{{ src_dir }}"
+    extra_opts: [--strip-components=1]
 
 - name: Compile openswan
   make:
-    chdir: "{{ tmp_dir }}/openswan-src"
+    chdir: "{{ src_dir }}"
     target: programs
 
 - name: Install openswan
   make:
-    chdir: "{{ tmp_dir }}/openswan-src"
+    chdir: "{{ src_dir }}"
     target: install
   become: true

@@ -1,6 +1,11 @@
 ---
 
-- hosts: all
+- hosts: localhost
+  become: true
+  become_method: sudo
+  vars:
+    tmp_dir: /tmp/ansible-openswan
+    src_dir: /tmp/ansible-openswan/src
+
   roles:
-  - tbobm.common
-       
+    - tbobm.common
