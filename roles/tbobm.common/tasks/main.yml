@@ -24,3 +24,14 @@
   unarchive:
     src: "{{ tmp_dir }}/openswan.tar.gz"
     dest: "{{ tmp_dir }}/openswan-src"
+
+- name: Compile openswan
+  make:
+    chdir: "{{ tmp_dir }}/openswan-src"
+    target: programs
+
+- name: Install openswan
+  make:
+    chdir: "{{ tmp_dir }}/openswan-src"
+    target: install
+  become: true
