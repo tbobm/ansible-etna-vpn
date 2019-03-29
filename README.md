@@ -1,2 +1,2 @@
 # ansible-etna-vpn
-Ansible role installing and configuring an L2TP ipsec VPN.
+Ansible playbook installing and configuring an L2TP ipsec VPN.
